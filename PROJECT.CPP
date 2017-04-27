@@ -4,107 +4,186 @@
 #include <graphics.h>
 #include <stdlib.h>
 
-#define KEY_UP 72
-#define KEY_DOWN 80
-#define KEY_LEFT 75
-#define KEY_RIGHT 77
+#define UP 72
+#define DOWN 80
+#define LEFT 75
+#define RIGHT 77
 #define ESC 27
 #define SPACE 32
 #define ENTER 13
 
+int team=1, tempctr1=0, tempctr2=0;
 
-int alphactr,team=1;
 
+struct temp
+{
+	char alpha;
+	int x;
+	int y;
+}
+temp1[10], temp2[10];
 
 char 	player1[10],
 		player2[10],
 		alpha,
 		board[15][15];
 
-int verifyalpha()
-	{  int i;
-	   if(team==1)
-			for(i=0;i<10;i++)
-			 {
-				 if(int(player1[i])+32==int(alpha))
-				   {
-					player1[i]=NULL;
-					return 1;}
-			}
+int indictionary()
+{
+	return(1);
+}
 
-	else {
-		   for(i=0;i<10;i++)
-			  if(int(player2[i])+32==int(alpha))
-			  { player2[i]=NULL;
-				return 1;}
-				}
-	 return 0;
-	 }
+int verifystr(int i, int j)
+{
+	int c, k=0;
+	char str[15]="";
+	//cout<<"Direction: ";
+	c=80;
+	switch(c)
+	{
+
+		case DOWN:
+			//cout<<"down";
+			while( board[i-1][j] && i>0)
+				i--;
+
+			while(board[i][j] && i<15)
+			{
+
+				str[k]=board[i][j];
+				k++;
+				i++;
+			}
+			break;
+
+		case RIGHT:
+
+			while( board[i][j-1] && j>0)
+				j--;
+
+			while(board[i][j] && j<15)
+			{
+				str[k]=board[i][j];
+				k++;
+				j++;
+			}
+			break;
+
+		default:
+			break;
+
+	}
+	cout<<str;
+
+	if (indictionary())
+		return(1);
+	else
+		return(0);
+}
+
+int verifyalpha()
+{
+	int i;
+
+	if(team==1)
+	{
+		for(i=0; i<10; i++)
+			if(int(player1[i])+32 == int(alpha))
+			{
+				player1[i]=NULL;
+				temp1[tempctr1++].alpha=alpha;
+				return 1;
+			}
+	}
+
+	else
+	{
+		for(i=0; i<10; i++)
+			if(int(player2[i])+32 == int(alpha))
+			{
+				player2[i]=NULL;
+				temp2[tempctr2++].alpha=alpha;
+				return 1;
+			}
+	}
+	return 0;
+}
+
 void movecell(int x, int y)
 {
 	int c, flag=1, ctr1=7, ctr2=7;
 	while(flag==1)
 	{
 		c = 0;
-		setfillstyle(EMPTY_FILL, BLACK);
+		setfillstyle(SOLID_FILL, BLACK);
 
 		switch((c=getch()))
 		{
 
-			case KEY_UP:
+			case UP:
 				//cout<<"Up";
 				if(ctr1 < 16 && ctr1 > 0)
 				{
 					floodfill(x, y, WHITE);
+					alpha=board[ctr1][ctr2];
+					outtextxy(x-3, y-30, &alpha);
 					y=y-24;
 					ctr1--;
 				}
 				break;
 
-			case KEY_DOWN:
+			case DOWN:
 				//cout<<"Down";
-
 				if(ctr1 < 14 && ctr1 > -1)
-				 {
+				{
 					floodfill(x, y, WHITE);
+					alpha=board[ctr1][ctr2];
+					outtextxy(x-3, y-30, &alpha);
 					y=y+24;
 					ctr1++;
-				 }
-				 break;
+				}
+				break;
 
-			case KEY_LEFT:
-
+			case LEFT:
 				//cout<<"Left";
 				if(ctr2 < 15 && ctr2 > 0)
 				{
 					floodfill(x, y, WHITE);
+					alpha=board[ctr1][ctr2];
+					outtextxy(x-3, y-30, &alpha);
 					x=x-24;
 					ctr2--;
 				}
 				break;
 
-			case KEY_RIGHT:
+			case RIGHT:
 				//cout<<"Right";
 				if(ctr2 < 14 && ctr2 > -1)
 				{
 					floodfill(x, y, WHITE);
+					alpha=board[ctr1][ctr2];
+					outtextxy(x-3, y-30, &alpha);
 					x=x+24;
 					ctr2++;
 				}
 				break;
 
-
 			case SPACE:
 				//cout<<"SPACE";
-
 				if(board[ctr1][ctr2])
 				{
 					cout<<board[ctr1][ctr2];
 					flag=1;
 					break;
 				}
-				setfillstyle(SOLID_FILL, GREEN);
+				setfillstyle(SOLID_FILL, RED);
 				flag=2;
+				break;
+
+			case ENTER:
+				//cout<<"ENTER";
+				verifystr(ctr1, ctr2);
+				//team= (team==1) ? 2:1;
 				break;
 
 			case ESC:
@@ -114,21 +193,21 @@ void movecell(int x, int y)
 		}
 
 		if(flag==1)
-			setfillstyle(CLOSE_DOT_FILL, BLUE);
+			setfillstyle(INTERLEAVE_FILL, RED);
+
 		floodfill(x, y, WHITE);
 
 
-	  if(flag==2)
+		if(flag==2)
 		{
 			alpha=getch();
 			settextstyle(6, HORIZ_DIR, 3);
-			outtextxy(x-1, y-30, &alpha);
+			outtextxy(x-3, y-30, &alpha);
 			flag=1;
 			if(verifyalpha())
-			{
-
 				board[ctr1][ctr2]=alpha;
-			}
+			else
+				cout<<"N/A in team"<<team;
 		}
 	}
 }
@@ -182,7 +261,6 @@ void fillplayer2()
 			ch=player2[k];
 			outtextxy((523 + j*25), y, &ch);
 		}
-
 	}
 }
 
@@ -279,7 +357,7 @@ void boardgraph()
 	line(615, 320, 615, 300);
 	line(638, 320, 638, 300);
 
-	setfillstyle(SOLID_FILL, BLUE);
+	setfillstyle(INTERLEAVE_FILL, RED);
 	floodfill(x,y,WHITE);
 
 	setcolor(RED);
@@ -289,10 +367,10 @@ void boardgraph()
 	settextstyle(2, HORIZ_DIR, 8);
 	setcolor(GREEN);
 	fillplayer1();
-	setcolor(YELLOW);
+	setcolor(CYAN);
 	fillplayer2();
-	//outtextxy(x,y,"h");
 
+	setcolor(YELLOW);
 	movecell(x, y);
 }
 
@@ -321,7 +399,7 @@ int main()
 			for(i=0; i<15; i++)
 				for(j=0; j<15; j++)
 					board[i][j]=NULL;
-			board[7][8]='a';
+			//board[7][8]='a';
 
 			boardgraph();
 			break;
