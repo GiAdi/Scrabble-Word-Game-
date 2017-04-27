@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <graphics.h>
 #include <stdlib.h>
-#include <string.h>
 
 #define UP 72
 #define DOWN 80
@@ -13,9 +12,7 @@
 #define SPACE 32
 #define ENTER 13
 
-int team=1,
-	tempctr1=0,
-	tempctr2=0;
+int team=1, tempctr1=0, tempctr2=0;
 
 
 struct temp
@@ -26,11 +23,10 @@ struct temp
 }
 temp1[10], temp2[10];
 
-char player1[10],
-	 player2[10],
-	 alpha,
-	 board[15][15];
-
+char 	player1[10],
+		player2[10],
+		alpha,
+		board[15][15];
 
 int indictionary()
 {
@@ -40,9 +36,10 @@ int indictionary()
 int verifystr(int i, int j)
 {
 	int k=0;
-	char dir, str[15];
+	char str[15]="";
+	char c;
 	cout<<"Direction: ";
-	switch((dir=getch()))
+	switch((c=getch()))
 	{
 
 		case 'v':
@@ -76,7 +73,6 @@ int verifystr(int i, int j)
 			break;
 
 	}
-
 	cout<<str;
 
 	if (indictionary())
@@ -186,8 +182,8 @@ void movecell(int x, int y)
 
 			case ENTER:
 				//cout<<"ENTER";
-				if(verifystr(ctr1, ctr2))
-					team= (team==1) ? 2:1;
+				verifystr(ctr1, ctr2);
+				team= (team==1) ? 2:1;
 				break;
 
 			case ESC:
