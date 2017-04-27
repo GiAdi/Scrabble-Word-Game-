@@ -82,8 +82,7 @@ void movecell(int x, int y)
 					ctr2--;
 				}
 				break;
-
-			case KEY_RIGHT:
+				case KEY_RIGHT:
 				//cout<<"Right";
 				if(ctr2 < 14 && ctr2 > -1)
 				{
